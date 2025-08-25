@@ -55,20 +55,20 @@ known_face_names = [
 ]
 
 id = {
-    "bill": 0,
-    "Tom": 1,
-    "holland": 2,
-    "henry": 3,
-    "amin": 4,
-    "aziz": 5,
-    "andy": 6,
+     "bill": 1,
+    "Tom": 2,
+    "holland": 3,
+    "henry": 4,
+    "amin": 5,
+    "aziz": 6,
+    "andy": 7,
 
 
 }
 adm ={
-"bill": 0,
-    "Tom": 1,
-    "amin": 4,
+"bill": 1,
+    "Tom": 2,
+    "amin": 5,
    }
 
 
@@ -122,11 +122,12 @@ while True:
             user_id= id.get(name)
             if name in adm:
                 account_type = "admin"
-
+            elif name == "unknown":
+                account_type = "none"
             else:
                 account_type = "regular"
 
-         #   send_to_esp32(name, account_type, user_id)
+           # send_to_esp32(name, account_type, user_id)
 
             face_names.append(name)
 
