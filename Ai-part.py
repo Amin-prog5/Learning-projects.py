@@ -1,8 +1,9 @@
 import face_recognition
 import cv2
 import numpy as np
+import requests
+from datetime import datetime
 
-#import requests
 
 video_capture = cv2.VideoCapture(0)
 
@@ -48,7 +49,7 @@ known_face_names = [
     "amin",
     "aziz",
     "andy",
-   
+
 
 
 ]
@@ -61,18 +62,33 @@ id = {
     "amin": 4,
     "aziz": 5,
     "andy": 6,
-    
+
 
 }
+adm ={
+"bill": 0,
+    "Tom": 1,
+    "amin": 4,
+   }
 
-#ESP32_IP = "http://192.168.1.166"
 
-#def send_to_esp32(result):
-#   if result == "unknown":
-#          requests.get(f"{ESP32_IP}/deny")
 
-# else:
-#        requests.get(f"{ESP32_IP}/open")
+ESP32_IP = "http://192.168.1.166/msg"
+
+def send_to_esp32(name, account_type, user_id):
+
+    time_now = datetime.now().strftime("%H:%M:%S")
+
+    if name == "unknown":
+
+        payload = f"{name},{time_now},none,0"
+        requests.get(f"{ESP32_IP}/unknown", params={"data": payload})
+
+    else:
+
+        payload = f"{name},{time_now},{account_type},{user_id}"
+        requests.get(f"{ESP32_IP}/open", params={"data": payload})
+
 
 
 process_this_frame = True
@@ -101,7 +117,16 @@ while True:
             if matches[best_match_index]:
                 name = known_face_names[best_match_index]
 
-            #  send_to_esp32(name)
+                # fun send
+            account_type  = ""
+            user_id= id.get(name)
+            if name in adm:
+                account_type = "admin"
+
+            else:
+                account_type = "regular"
+
+         #   send_to_esp32(name, account_type, user_id)
 
             face_names.append(name)
 
@@ -118,7 +143,7 @@ while True:
         cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
         font = cv2.FONT_HERSHEY_DUPLEX
         cv2.putText(frame, name + " " + str(id.get(name, 0)), (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
-       # print(str(id.get(name, 0)))
+        print(id.get(name))
     cv2.imshow('vid', frame)
 
     if cv2.waitKey(1) & 0xFF == ord('e'):
